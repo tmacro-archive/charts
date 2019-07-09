@@ -1,0 +1,27 @@
+{{- if .Values.longhorn.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: longhorn-ingress-oauth2-proxy
+  labels:
+    app: longhorn-ingress-oauth2-proxy
+  annotations:
+    {{- if .Values.longhorn.ingress.tls }}
+    ingress.kubernetes.io/secure-backends: "true"
+    {{- end }}
+spec:
+  rules:
+  - host: {{ .Values.longhorn.ingress.host }}
+    http:
+      paths:
+        - path: {{ .Values.oauth2ProxyServicePath }}
+          backend:
+            serviceName: {{ .Values.oauth2ProxyServiceName }}
+            servicePort: {{ .Values.oauth2ProxyServicePort }}
+{{- if .Values.longhorn.ingress.tls }}
+  tls:
+  - hosts:
+    - {{ .Values.longhorn.ingress.host }}
+    secretName: {{ .Values.longhorn.ingress.tlsSecret }}
+{{- end }}
+{{- end }}

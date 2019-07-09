@@ -1,14 +1,19 @@
-# Default values for tiddlywiki.
+# Default values for oauth2-proxy.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# Replicas per deployment
 replicaCount: 1
+# Range of deployments
+maxReplicas: 5
+minReplicas: 1
 
 image:
-  repository: tmacro/tiddlydocker
-  tag: latest
+  repository: bitnami/oauth2-proxy
+  tag: 3.1.0
   pullPolicy: IfNotPresent
 
+imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
@@ -16,22 +21,10 @@ service:
   type: ClusterIP
   port: 80
 
-server_name: Repo
-
-ingress:
-  enabled: true
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: tiddlywiki.local
-      paths: 
-        - '/'
-
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+existingSecret: ''
+existingSecretClientIDKey: 'client_id'
+existingSecretClientSecretKey: 'client_secret'
+existingSecretCookieSecretKey: 'cookie_secret'
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -39,10 +32,10 @@ resources: {}
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   # limits:
-  #   cpu: 100m
+  #   cpu: 50m
   #   memory: 128Mi
   # requests:
-  #   cpu: 100m
+  #   cpu: 10m
   #   memory: 128Mi
 
 nodeSelector: {}
@@ -50,13 +43,3 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
-
-persistentVolume:
-  enabled: False
-  size: 5Gb
-
-credsFromSecret:
-  enabled: false
-  secret: ''
-  userKey: username
-  passwordKey: password

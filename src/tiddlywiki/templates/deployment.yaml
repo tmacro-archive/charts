@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "tiddywiki.fullname" . }}
+  name: {{ include "tiddlywiki.fullname" . }}
   labels:
-{{ include "tiddywiki.labels" . | indent 4 }}
+{{ include "tiddlywiki.labels" . | indent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "tiddywiki.name" . }}
+      app.kubernetes.io/name: {{ include "tiddlywiki.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "tiddywiki.name" . }}
+        app.kubernetes.io/name: {{ include "tiddlywiki.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       containers:
@@ -31,6 +31,18 @@ spec:
               value: /data
             - name: TIDDLYWIKI_NAME
               name: {{ .Values.server_name }}
+            {{- if .Values.credsFromSecret.enabled }}
+            - name: TIDDLYWIKI_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.credsFromSecret.secret }}
+                  key: {{ .Values.credsFromSecret.userKey }}
+            - name: TIDDLYWIKI_PASSWD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.credsFromSecret.secret }}
+                  key: {{ .Values.credsFromSecret.passwordKey }}
+            {{- end }}
           readinessProbe:
             tcpSocket:
               port: 80
@@ -44,7 +56,7 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-            - name: {{ include "tiddywiki.name" . }}-storage
+            - name: {{ include "tiddlywiki.name" . }}-storage
               mountPath: /data
       {{- with .Values.nodeSelector }}
       nodeSelector:
@@ -59,10 +71,10 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       volumes:
-        - name: {{ include "tiddywiki.name" . }}-storage
+        - name: {{ include "tiddlywiki.name" . }}-storage
           {{- if .Values.persistentVolume.enabled }}
           persistentVolumeClaim:
-            claimName: {{ include "tiddywiki.fullname" . }}
+            claimName: {{ include "tiddlywiki.fullname" . }}
           {{- else }}
           emptyDir: {}
           {{- end }}

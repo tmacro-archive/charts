@@ -1,0 +1,4 @@
+dependencies:
+  - name: longhorn
+    version: ~0.5.0
+    repository: https://tmacro.github.io/charts/

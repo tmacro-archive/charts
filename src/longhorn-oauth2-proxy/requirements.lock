@@ -1,0 +1,6 @@
+dependencies:
+- name: longhorn
+  repository: https://tmacro.github.io/charts/
+  version: 0.5.0
+digest: sha256:b59d47606ec766acb2af8b224edfd7839aade08372dd207e0e86abb38395c613
+generated: "2019-09-02T15:57:20.37557445-07:00"

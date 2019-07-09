@@ -1,13 +1,93 @@
 apiVersion: v1
 entries:
+  cert-manager:
+  - apiVersion: v1
+    appVersion: 0.9.1
+    created: "2019-09-05T18:28:00.431107185-07:00"
+    description: A overlay chart for cert-manager with letsencrypt + cloudflare issuers
+    digest: 7e736eeb44f2869d4341cd3e8bc348edcabd6ca418ad1dfb175799929591245c
+    name: cert-manager
+    urls:
+    - https://tmacro.github.io/charts/charts/cert-manager-0.1.1.tgz
+    version: 0.1.1
+  keycloak:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: "2019-09-05T18:28:00.43291844-07:00"
+    description: A Keycloak chart overlay for easy realm configuration
+    digest: 694ed5afdeaa7ce063fba93e083ef72937a126e7ae7941089676fad9708c975e
+    name: keycloak
+    urls:
+    - https://tmacro.github.io/charts/charts/keycloak-0.1.0.tgz
+    version: 0.1.0
+  longhorn:
+  - apiVersion: v1
+    appVersion: v0.5.0
+    created: "2019-09-05T18:28:00.433377859-07:00"
+    description: Longhorn is a distributed block storage system for Kubernetes powered
+      by Rancher Labs.
+    digest: 64593a16fc29e2abd8b658a12da174a85a26ccb136c5d3565721877025bede4c
+    home: https://github.com/rancher/longhorn
+    icon: https://s3.us-east-2.amazonaws.com/longhorn-assets/longhorn-logo.svg
+    keywords:
+    - longhorn
+    - storage
+    - distributed
+    - block
+    - device
+    - iscsi
+    kubeVersion: '>=v1.8.0-r0'
+    maintainers:
+    - email: charts@rancher.com
+      name: rancher
+    name: longhorn
+    sources:
+    - https://github.com/rancher/longhorn
+    - https://github.com/rancher/longhorn-engine
+    - https://github.com/rancher/longhorn-manager
+    - https://github.com/rancher/longhorn-ui
+    - https://github.com/rancher/longhorn-tests
+    urls:
+    - https://tmacro.github.io/charts/charts/longhorn-0.5.0.tgz
+    version: 0.5.0
+  longhorn-oauth2-proxy:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: "2019-09-05T18:28:00.433894345-07:00"
+    description: A Helm chart for Kubernetes
+    digest: 8918312f0a0d27962fa485d8a9263b526b38bca37f3f97a3e57d67e4a92d6700
+    name: longhorn-oauth2-proxy
+    urls:
+    - https://tmacro.github.io/charts/charts/longhorn-oauth2-proxy-0.1.0.tgz
+    version: 0.1.0
+  oauth2-proxy:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: "2019-09-05T18:28:00.43464132-07:00"
+    description: A oauth2-proxy deployment intended for use with keycloak
+    digest: 8827938e253221983feddf064d76622a7fc04bb6daebe1d3e719890b92909a42
+    name: oauth2-proxy
+    urls:
+    - https://tmacro.github.io/charts/charts/oauth2-proxy-0.1.0.tgz
+    version: 0.1.0
+  rainloop:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: "2019-09-05T18:28:00.434831634-07:00"
+    description: A Helm chart for Kubernetes
+    digest: 6fc10ded908fa208c6471327c6acdd3b2ef2b74fb3d62a98b15103bf551884d0
+    name: rainloop
+    urls:
+    - https://tmacro.github.io/charts/charts/rainloop-0.1.0.tgz
+    version: 0.1.0
   tiddlywiki:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2019-07-08T17:33:46.13254257-07:00"
+    created: "2019-09-05T18:28:00.435012535-07:00"
     description: A Helm chart for Kubernetes
-    digest: 50554d39821880fb9e45df9da1a8cdb61a7e35273315fe63378d946a0b653305
+    digest: 9396519887e40ba007a5798e6f56fd675e622acc1bd220f1d0eb78f0b2260f4f
     name: tiddlywiki
     urls:
-    - charts/tiddlywiki-0.1.0.tgz
-    version: 0.1.0
-generated: "2019-07-08T17:33:46.132197204-07:00"
+    - https://tmacro.github.io/charts/charts/tiddlywiki-0.1.1.tgz
+    version: 0.1.1
+generated: "2019-09-05T18:28:00.430105439-07:00"

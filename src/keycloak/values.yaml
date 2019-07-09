@@ -1,0 +1,192 @@
+# Default values for keycloak.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+
+keycloak:
+  hostname: "cluster.local"
+  realmName: Applications
+  realmConfig: {}
+
+  clients: []
+
+  keycloak:
+    extraVolumes: |
+      - configMap:
+          name: {{ include "keycloak.fullname" . }}-realm-export
+        name: realm-export
+
+    extraVolumeMounts: |
+      - name: realm-export
+        mountPath: "/realm/"
+        readOnly: true
+
+    extraArgs: -Dkeycloak.import=/realm/realm-export.json
+
+    extraEnv: |
+      - name: PROXY_ADDRESS_FORWARDING
+        value: 'true'
+      - name: REALM_DIR
+        value: '/realm'
+      {{ range $client := $.Values.clients -}}
+      - name: "KEYCLOAK_{{ $client.clientId }}_CLIENT_SECRET"
+        valueFrom:
+          secretKeyRef:
+      {{ if $client.existingSecret -}} 
+      {{ printf "name: %s" $client.existingSecret |  indent 6 }}
+            key: {{ default "client_secret" $client.existingSecretKey }}
+      {{- else -}}
+      {{ printf "name: %s-%s-client-secret" (include "keycloak.fullname" $) $client.clientId  | indent 6 }}
+            key: client_secret
+      {{ end -}}    
+      {{ end -}}    
+
+    startupScripts:
+      patch-client-secrets.py: |
+        #!/usr/bin/env python
+
+        import json
+        import os
+        import glob
+
+        class RequiredEnvironmentError(Exception):
+            pass
+
+        REALM_DIR = os.environ.get('REALM_DIR')
+        if REALM_DIR is None:
+            raise RequiredEnvironmentError('REALM_DIR')
+
+        def get_secret_from_env(name, clientId):
+            val = os.environ.get('KEYCLOAK_%s_%s_CLIENT_SECRET'%(name, clientId))
+            if val is None:
+                raise RequiredEnvironmentError('%s_CLIENT_SECRET'%clientId)
+            return val
+
+        for realm in glob.iglob(REALM_DIR + '/*-realm-export.json'):
+            print 'Patching %s...'%realm
+            with open(realm) as f:
+                _realm = json.load(f)
+            patched = _realm.copy() 
+            name = realm.get('id')
+            for i, client in enumerate(_realm.get('clients', [])):
+                secret = get_secret_from_env(name, client.get('clientId'))
+                patched['clients'][i]['secret'] = secret
+            with open(realm, 'w') as f:
+                json.dump(patched, f)
+
+
+  realmDefaults:
+    id: null # If null use the values dict key
+    realm: null # If null use the values dict key
+    enabled: True
+    clients: 
+      - clientId: oauth2-proxy
+        enabled: True
+        redirectUris:
+          - '*'
+    accessCodeLifespan: 60
+    accessCodeLifespanLogin: 1800
+    accessCodeLifespanUserAction: 300
+    accessTokenLifespan: 300
+    accessTokenLifespanForImplicitFlow: 900
+    actionTokenGeneratedByAdminLifespan: 43200
+    actionTokenGeneratedByUserLifespan: 300
+    bruteForceProtected: true
+    defaultRoles:
+      - offline_access
+      - uma_authorization
+    duplicateEmailsAllowed: false
+    editUsernameAllowed: false
+    failureFactor: 30
+    loginWithEmailAllowed: true
+    maxDeltaTimeSeconds: 43200
+    maxFailureWaitSeconds: 900
+    minimumQuickLoginWaitSeconds: 60
+    notBefore: 0
+    offlineSessionIdleTimeout: 2592000
+    offlineSessionMaxLifespan: 5184000
+    offlineSessionMaxLifespanEnabled: false
+    otpPolicyAlgorithm: HmacSHA1
+    otpPolicyDigits: 6
+    otpPolicyInitialCounter: 42
+    otpPolicyLookAheadWindow: 1
+    otpPolicyPeriod: 30
+    otpPolicyType: totp
+    otpSupportedApplications:
+      - FreeOTP
+      - Google Authenticator
+    permanentLockout: false
+    quickLoginCheckMilliSeconds: 1000
+    refreshTokenMaxReuse: 0
+    registrationAllowed: false
+    registrationEmailAsUsername: false
+    rememberMe: true
+    requiredCredentials:
+      - password
+    resetPasswordAllowed: false
+    revokeRefreshToken: false
+    scopeMappings:
+      - clientScope: offline_access
+        roles:
+          - offline_access
+    sslRequired: external
+    ssoSessionIdleTimeout: 1800
+    ssoSessionIdleTimeoutRememberMe: 0
+    ssoSessionMaxLifespan: 36000
+    ssoSessionMaxLifespanRememberMe: 0
+    verifyEmail: false
+    waitIncrementSeconds: 60
+    
+  clientDefaults:
+    # Generate a random client secret by default
+    # Generated if undefined
+    # id: changeme
+    enabled: false
+    secret: null
+    preexistingSecret:
+      enabled: false
+      name: my-secret
+      clientSecretKey: client_secret
+      cookieSecretKey: cookie_secret
+    redirectUris: []
+    attributes:
+      display.on.consent.screen: 'false'
+      exclude.session.state.from.auth.response: 'false'
+      saml.assertion.signature: 'false'
+      saml.authnstatement: 'false'
+      saml.client.signature: 'false'
+      saml.encrypt: 'false'
+      saml.force.post.binding: 'false'
+      saml.multivalued.roles: 'false'
+      saml.onetimeuse.condition: 'false'
+      saml.server.signature: 'false'
+      saml.server.signature.keyinfo.ext: 'false'
+      saml_force_name_id_format: 'false'
+      tls.client.certificate.bound.access.tokens: 'false'
+    authenticationFlowBindingOverrides: {}
+    bearerOnly: false
+    clientAuthenticatorType: client-secret
+    consentRequired: false
+    defaultClientScopes:
+      - web-origins
+      - role_list
+      - roles
+      - profile
+      - email
+    directAccessGrantsEnabled: true
+    frontchannelLogout: false
+    fullScopeAllowed: true
+    implicitFlowEnabled: false
+    nodeReRegistrationTimeout: -1
+    notBefore: 0
+    optionalClientScopes:
+      - address
+      - phone
+      - offline_access
+      - microprofile-jwt
+    protocol: openid-connect
+    publicClient: true
+    serviceAccountsEnabled: false
+    standardFlowEnabled: true
+    surrogateAuthRequired: false
+    webOrigins: []

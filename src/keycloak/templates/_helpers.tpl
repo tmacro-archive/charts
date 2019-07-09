@@ -2,7 +2,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "tiddlywiki.name" -}}
+{{- define "keycloak.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -11,7 +11,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "tiddlywiki.fullname" -}}
+{{- define "keycloak.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -27,16 +27,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "tiddlywiki.chart" -}}
+{{- define "keycloak.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
 Common labels
 */}}
-{{- define "tiddlywiki.labels" -}}
-app.kubernetes.io/name: {{ include "tiddlywiki.name" . }}
-helm.sh/chart: {{ include "tiddlywiki.chart" . }}
+{{- define "keycloak.labels" -}}
+app.kubernetes.io/name: {{ include "keycloak.name" . }}
+helm.sh/chart: {{ include "keycloak.chart" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
@@ -44,6 +44,9 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
-{{/*
-Name of Tiddlywiki volume
-*/}}
+{{- define "keycloak.import-args" -}}
+{{- range $realmName, $realmConfig := .Values.realms -}}
+{{ $realmName }}-realm-export.json
+{{- end }}
+{{- end }}
+

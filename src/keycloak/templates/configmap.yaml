@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+{{ include "keycloak.labels" . | indent 4 }}
+  name: {{ include "keycloak.fullname" . }}-realm-export
+data: 
+  realm-export.json: {{ include "keycloak.realm-configmap" . | quote }}
