@@ -1,0 +1,13 @@
+apiVersion: v1
+entries:
+  tiddlywiki:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: "2019-07-08T17:33:46.13254257-07:00"
+    description: A Helm chart for Kubernetes
+    digest: 50554d39821880fb9e45df9da1a8cdb61a7e35273315fe63378d946a0b653305
+    name: tiddlywiki
+    urls:
+    - charts/tiddlywiki-0.1.0.tgz
+    version: 0.1.0
+generated: "2019-07-08T17:33:46.132197204-07:00"
