@@ -43,7 +43,9 @@ patch: no-working-changes _patch _release
 release: patch
 .PHONY: _patch patch release
 
-index: $(CHARTS) external
+build: $(CHARTS) external
+
+index:
 	$(HELM) repo index --url $(CHART_REPO_URL) .
 .PHONY: index
 
